@@ -1,0 +1,94 @@
+name: TestFlight
+
+# 需要 4 個 GitHub Secrets（設定方式見 README「TestFlight」）：
+#   ASC_KEY_ID、ASC_ISSUER_ID、ASC_KEY_P8（.p8 檔的完整內容）、APPLE_TEAM_ID
+# 還沒設定時，這個 workflow 只會顯示提醒、不會失敗。
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "WebTranslator/**"
+      - "WebTranslator.xcodeproj/**"
+      - ".github/workflows/testflight.yml"
+
+jobs:
+  testflight:
+    runs-on: macos-15
+    env:
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+    steps:
+      - name: 檢查 Secrets
+        id: check
+        run: |
+          missing=""
+          for v in ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_P8 APPLE_TEAM_ID; do
+            if [ -z "${!v}" ]; then missing="$missing $v"; fi
+          done
+          if [ -n "$missing" ]; then
+            echo "::warning::尚未設定 GitHub Secrets：$missing，略過上傳 TestFlight。"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.check.outputs.ready == 'true'
+
+      - name: 選用最新正式版 Xcode
+        if: steps.check.outputs.ready == 'true'
+        run: |
+          XCODE=$(ls -d /Applications/Xcode_*.app | grep -vi -e beta -e rc | sort -V | tail -1)
+          if [ -n "$XCODE" ]; then sudo xcode-select -s "$XCODE"; fi
+          xcodebuild -version
+
+      - name: 寫入 App Store Connect API 金鑰
+        if: steps.check.outputs.ready == 'true'
+        run: |
+          KEY_PATH="$RUNNER_TEMP/AuthKey_${ASC_KEY_ID}.p8"
+          printf '%s\n' "$ASC_KEY_P8" > "$KEY_PATH"
+          echo "KEY_PATH=$KEY_PATH" >> "$GITHUB_ENV"
+
+      # 先不簽章封存，匯出時再由 Xcode 用雲端管理的發佈憑證簽章並上傳，
+      # 不需要在電腦上產生憑證或描述檔。
+      - name: 封存（Archive）
+        if: steps.check.outputs.ready == 'true'
+        run: |
+          xcodebuild -project WebTranslator.xcodeproj -scheme WebTranslator \
+            -configuration Release -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/WebTranslator.xcarchive" \
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
+            CURRENT_PROJECT_VERSION="${{ github.run_number }}" \
+            CODE_SIGNING_ALLOWED=NO \
+            archive
+
+      - name: 簽章並上傳到 TestFlight
+        if: steps.check.outputs.ready == 'true'
+        run: |
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>teamID</key><string>${APPLE_TEAM_ID}</string>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+            <key>uploadSymbols</key><true/>
+          </dict>
+          </plist>
+          PLIST
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/WebTranslator.xcarchive" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -exportPath "$RUNNER_TEMP/export" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$KEY_PATH" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+          echo "已上傳，約 10–30 分鐘後會出現在 App Store Connect 的 TestFlight 分頁。"

@@ -32,13 +32,63 @@
 2. USB 連接 iPhone，iPhone 上點「信任這部電腦」。
 3. 把 `WebTranslator.ipa` 拖進 Sideloadly，輸入 Apple ID，按 Start（建議用一個副帳號 Apple ID）。
 
-### 3. iPhone 設定
+### 3. iPhone 設定（免費帳號方式）
 1. 設定 → 隱私權與安全性 → **開發者模式** → 開啟並重開機。
 2. 設定 → 一般 → **VPN 與裝置管理** → 點你的 Apple ID → 信任。
-3. 免費 Apple ID 安裝的 App **7 天後失效**，重新用 Sideloadly 安裝即可（不用重新編譯）。
+3. 免費 Apple ID 安裝的 App **7 天後失效**，重新用 Sideloadly 安裝即可（不用重新編譯）。想長期使用請改用下面的 TestFlight。
 
 ### （有 Mac 的話）用 Xcode 直接安裝
 開啟 `WebTranslator.xcodeproj` → Signing & Capabilities 的 Team 選你的 Apple ID（Bundle Identifier 衝突就改成獨一無二的名稱）→ 接上 iPhone 按 ▶。翻譯功能在模擬器上無法運作，請用實機。
+
+## 長期使用：TestFlight（建議，需要 Apple 開發者計畫）
+
+設定一次之後，每次 main 分支有更新，GitHub 會自動編譯、簽章並上傳到 TestFlight，iPhone 上的 TestFlight App 按「更新」就好，不需要電腦或傳輸線。每個版本可以用 90 天。以下步驟在 Windows 或手機的瀏覽器都能完成。
+
+### 1. 加入 Apple 開發者計畫（每年 US$99）
+在 iPhone 下載「Apple Developer」App 註冊最方便，或到 developer.apple.com/programs/enroll。審核通過後才能進行下一步，通常需要一到兩天。
+
+### 2. 註冊 Bundle ID
+developer.apple.com › Account › **Certificates, IDs & Profiles** › **Identifiers** › 按「+」› **App IDs** › **App**：
+- Description：WebTranslator
+- Bundle ID 選 **Explicit**，填 `com.scotttu.webtranslator`（必須完全一樣）
+- 其他功能都不用勾，按 Continue › Register。
+
+### 3. 在 App Store Connect 建立 App
+appstoreconnect.apple.com › **App** › 「+」› **新增 App**：
+- 平台：iOS
+- 名稱：任何還沒被別人用過的名字，例如「網頁翻譯 Scott」（只有你看得到，不會上架）
+- 主要語言：繁體中文
+- 套裝識別碼（Bundle ID）：選剛剛註冊的 `com.scotttu.webtranslator`
+- SKU：隨意，例如 webtranslator
+
+### 4. 建立 App Store Connect API 金鑰
+App Store Connect › **使用者與存取權限** › **整合** › **App Store Connect API** › **團隊金鑰** › 「+」：
+- 名稱：GitHub
+- 存取權限：**管理（Admin）**（雲端簽章需要這個權限）
+- 產生後記下 **Issuer ID** 與這把金鑰的 **Key ID**，並按「下載」取得 `AuthKey_XXXX.p8`。**這個檔案只能下載一次**，請妥善保存。
+
+### 5. 找到 Team ID
+developer.apple.com › Account › **Membership details**，複製 **Team ID**（10 個英數字）。
+
+### 6. 把 4 個值存進 GitHub Secrets
+GitHub 的 Webtranslator repository › **Settings** › **Secrets and variables** › **Actions** › **New repository secret**，一次新增一個：
+
+| Name | Secret |
+|---|---|
+| `ASC_KEY_ID` | 第 4 步的 Key ID |
+| `ASC_ISSUER_ID` | 第 4 步的 Issuer ID |
+| `ASC_KEY_P8` | 用記事本打開 `.p8` 檔，整份內容（含 BEGIN/END 那兩行）貼上 |
+| `APPLE_TEAM_ID` | 第 5 步的 Team ID |
+
+這些是私密金鑰，請直接存在 GitHub，不要貼到聊天或其他地方。
+
+### 7. 上傳第一個版本
+GitHub › **Actions** › 左側 **TestFlight** › **Run workflow**。跑完後約 10–30 分鐘，App Store Connect 的 **TestFlight** 分頁會出現這個版本。
+
+### 8. 安裝到 iPhone
+1. App Store Connect › TestFlight › **內部測試** › 「+」建立群組，把自己的 Apple ID 加進去並勾選這個版本。
+2. iPhone 從 App Store 安裝 **TestFlight**，收到邀請後按「接受」再「安裝」。
+3. 之後有新版本，TestFlight 會通知你更新。
 
 ## 第一次翻譯
 

@@ -8,13 +8,15 @@
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>com.example.WebTranslator</string>
+			<string>com.scotttu.webtranslator</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>webtranslator</string>
 			</array>
 		</dict>
 	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoadsInWebContent</key>
