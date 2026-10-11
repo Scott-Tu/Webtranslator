@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A1B2C3D40000000000000014"
+               BlueprintIdentifier = "A1B2C3D40000000000000018"
                BuildableName = "WebTranslator.app"
                BlueprintName = "WebTranslator"
                ReferencedContainer = "container:WebTranslator.xcodeproj">
@@ -36,7 +36,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A1B2C3D40000000000000014"
+               BlueprintIdentifier = "A1B2C3D40000000000000018"
                BuildableName = "WebTranslator.app"
                BlueprintName = "WebTranslator"
                ReferencedContainer = "container:WebTranslator.xcodeproj">

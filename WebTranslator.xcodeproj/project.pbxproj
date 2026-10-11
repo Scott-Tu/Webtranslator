@@ -7,29 +7,33 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A1B2C3D40000000000000007 /* BrowserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000001 /* BrowserModel.swift */; };
-		A1B2C3D40000000000000008 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000002 /* ContentView.swift */; };
-		A1B2C3D40000000000000009 /* Scripts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000003 /* Scripts.swift */; };
-		A1B2C3D4000000000000000A /* StartPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000004 /* StartPageView.swift */; };
-		A1B2C3D4000000000000000B /* WebTranslatorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000005 /* WebTranslatorApp.swift */; };
-		A1B2C3D4000000000000000C /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000006 /* WebView.swift */; };
-		A1B2C3D4000000000000000E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4000000000000000D /* Assets.xcassets */; };
+		A1B2C3D40000000000000009 /* BrowserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000001 /* BrowserModel.swift */; };
+		A1B2C3D4000000000000000A /* ClaudeTranslator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000002 /* ClaudeTranslator.swift */; };
+		A1B2C3D4000000000000000B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000003 /* ContentView.swift */; };
+		A1B2C3D4000000000000000C /* Scripts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000004 /* Scripts.swift */; };
+		A1B2C3D4000000000000000D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000005 /* SettingsView.swift */; };
+		A1B2C3D4000000000000000E /* StartPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000006 /* StartPageView.swift */; };
+		A1B2C3D4000000000000000F /* WebTranslatorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000007 /* WebTranslatorApp.swift */; };
+		A1B2C3D40000000000000010 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000008 /* WebView.swift */; };
+		A1B2C3D40000000000000012 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000011 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A1B2C3D40000000000000010 /* WebTranslator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WebTranslator.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1B2C3D40000000000000014 /* WebTranslator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WebTranslator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1B2C3D40000000000000001 /* BrowserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserModel.swift; sourceTree = "<group>"; };
-		A1B2C3D40000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		A1B2C3D40000000000000003 /* Scripts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scripts.swift; sourceTree = "<group>"; };
-		A1B2C3D40000000000000004 /* StartPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartPageView.swift; sourceTree = "<group>"; };
-		A1B2C3D40000000000000005 /* WebTranslatorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebTranslatorApp.swift; sourceTree = "<group>"; };
-		A1B2C3D40000000000000006 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
-		A1B2C3D4000000000000000D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		A1B2C3D4000000000000000F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A1B2C3D40000000000000002 /* ClaudeTranslator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeTranslator.swift; sourceTree = "<group>"; };
+		A1B2C3D40000000000000003 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A1B2C3D40000000000000004 /* Scripts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scripts.swift; sourceTree = "<group>"; };
+		A1B2C3D40000000000000005 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A1B2C3D40000000000000006 /* StartPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartPageView.swift; sourceTree = "<group>"; };
+		A1B2C3D40000000000000007 /* WebTranslatorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebTranslatorApp.swift; sourceTree = "<group>"; };
+		A1B2C3D40000000000000008 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
+		A1B2C3D40000000000000011 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A1B2C3D40000000000000013 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		A1B2C3D40000000000000017 /* Frameworks */ = {
+		A1B2C3D4000000000000001B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -39,33 +43,35 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A1B2C3D40000000000000011 = {
+		A1B2C3D40000000000000015 = {
 			isa = PBXGroup;
 			children = (
-				A1B2C3D40000000000000012 /* WebTranslator */,
-				A1B2C3D40000000000000013 /* Products */,
+				A1B2C3D40000000000000016 /* WebTranslator */,
+				A1B2C3D40000000000000017 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		A1B2C3D40000000000000013 /* Products */ = {
+		A1B2C3D40000000000000017 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A1B2C3D40000000000000010 /* WebTranslator.app */,
+				A1B2C3D40000000000000014 /* WebTranslator.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A1B2C3D40000000000000012 /* WebTranslator */ = {
+		A1B2C3D40000000000000016 /* WebTranslator */ = {
 			isa = PBXGroup;
 			children = (
 				A1B2C3D40000000000000001 /* BrowserModel.swift */,
-				A1B2C3D40000000000000002 /* ContentView.swift */,
-				A1B2C3D40000000000000003 /* Scripts.swift */,
-				A1B2C3D40000000000000004 /* StartPageView.swift */,
-				A1B2C3D40000000000000005 /* WebTranslatorApp.swift */,
-				A1B2C3D40000000000000006 /* WebView.swift */,
-				A1B2C3D4000000000000000D /* Assets.xcassets */,
-				A1B2C3D4000000000000000F /* Info.plist */,
+				A1B2C3D40000000000000002 /* ClaudeTranslator.swift */,
+				A1B2C3D40000000000000003 /* ContentView.swift */,
+				A1B2C3D40000000000000004 /* Scripts.swift */,
+				A1B2C3D40000000000000005 /* SettingsView.swift */,
+				A1B2C3D40000000000000006 /* StartPageView.swift */,
+				A1B2C3D40000000000000007 /* WebTranslatorApp.swift */,
+				A1B2C3D40000000000000008 /* WebView.swift */,
+				A1B2C3D40000000000000011 /* Assets.xcassets */,
+				A1B2C3D40000000000000013 /* Info.plist */,
 			);
 			path = WebTranslator;
 			sourceTree = "<group>";
@@ -73,13 +79,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A1B2C3D40000000000000014 /* WebTranslator */ = {
+		A1B2C3D40000000000000018 /* WebTranslator */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A1B2C3D4000000000000001E /* Build configuration list for PBXNativeTarget "WebTranslator" */;
+			buildConfigurationList = A1B2C3D40000000000000022 /* Build configuration list for PBXNativeTarget "WebTranslator" */;
 			buildPhases = (
-				A1B2C3D40000000000000016 /* Sources */,
-				A1B2C3D40000000000000017 /* Frameworks */,
-				A1B2C3D40000000000000018 /* Resources */,
+				A1B2C3D4000000000000001A /* Sources */,
+				A1B2C3D4000000000000001B /* Frameworks */,
+				A1B2C3D4000000000000001C /* Resources */,
 			);
 			buildRules = (
 			);
@@ -87,25 +93,25 @@
 			);
 			name = WebTranslator;
 			productName = WebTranslator;
-			productReference = A1B2C3D40000000000000010 /* WebTranslator.app */;
+			productReference = A1B2C3D40000000000000014 /* WebTranslator.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		A1B2C3D40000000000000015 /* Project object */ = {
+		A1B2C3D40000000000000019 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
-					A1B2C3D40000000000000014 = {
+					A1B2C3D40000000000000018 = {
 						CreatedOnToolsVersion = 16.0;
 					};
 				};
 			};
-			buildConfigurationList = A1B2C3D4000000000000001D /* Build configuration list for PBXProject "WebTranslator" */;
+			buildConfigurationList = A1B2C3D40000000000000021 /* Build configuration list for PBXProject "WebTranslator" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = "zh-Hant";
 			hasScannedForEncodings = 0;
@@ -114,45 +120,47 @@
 				Base,
 				"zh-Hant",
 			);
-			mainGroup = A1B2C3D40000000000000011;
-			productRefGroup = A1B2C3D40000000000000013 /* Products */;
+			mainGroup = A1B2C3D40000000000000015;
+			productRefGroup = A1B2C3D40000000000000017 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A1B2C3D40000000000000014 /* WebTranslator */,
+				A1B2C3D40000000000000018 /* WebTranslator */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		A1B2C3D40000000000000018 /* Resources */ = {
+		A1B2C3D4000000000000001C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1B2C3D4000000000000000E /* Assets.xcassets in Resources */,
+				A1B2C3D40000000000000012 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		A1B2C3D40000000000000016 /* Sources */ = {
+		A1B2C3D4000000000000001A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1B2C3D40000000000000007 /* BrowserModel.swift in Sources */,
-				A1B2C3D40000000000000008 /* ContentView.swift in Sources */,
-				A1B2C3D40000000000000009 /* Scripts.swift in Sources */,
-				A1B2C3D4000000000000000A /* StartPageView.swift in Sources */,
-				A1B2C3D4000000000000000B /* WebTranslatorApp.swift in Sources */,
-				A1B2C3D4000000000000000C /* WebView.swift in Sources */,
+				A1B2C3D40000000000000009 /* BrowserModel.swift in Sources */,
+				A1B2C3D4000000000000000A /* ClaudeTranslator.swift in Sources */,
+				A1B2C3D4000000000000000B /* ContentView.swift in Sources */,
+				A1B2C3D4000000000000000C /* Scripts.swift in Sources */,
+				A1B2C3D4000000000000000D /* SettingsView.swift in Sources */,
+				A1B2C3D4000000000000000E /* StartPageView.swift in Sources */,
+				A1B2C3D4000000000000000F /* WebTranslatorApp.swift in Sources */,
+				A1B2C3D40000000000000010 /* WebView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		A1B2C3D40000000000000019 /* Debug */ = {
+		A1B2C3D4000000000000001D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -210,7 +218,7 @@
 			};
 			name = Debug;
 		};
-		A1B2C3D4000000000000001A /* Release */ = {
+		A1B2C3D4000000000000001E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -261,7 +269,7 @@
 			};
 			name = Release;
 		};
-		A1B2C3D4000000000000001B /* Debug */ = {
+		A1B2C3D4000000000000001F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -290,7 +298,7 @@
 			};
 			name = Debug;
 		};
-		A1B2C3D4000000000000001C /* Release */ = {
+		A1B2C3D40000000000000020 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -322,25 +330,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A1B2C3D4000000000000001D /* Build configuration list for PBXProject "WebTranslator" */ = {
+		A1B2C3D40000000000000021 /* Build configuration list for PBXProject "WebTranslator" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A1B2C3D40000000000000019 /* Debug */,
-				A1B2C3D4000000000000001A /* Release */,
+				A1B2C3D4000000000000001D /* Debug */,
+				A1B2C3D4000000000000001E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A1B2C3D4000000000000001E /* Build configuration list for PBXNativeTarget "WebTranslator" */ = {
+		A1B2C3D40000000000000022 /* Build configuration list for PBXNativeTarget "WebTranslator" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A1B2C3D4000000000000001B /* Debug */,
-				A1B2C3D4000000000000001C /* Release */,
+				A1B2C3D4000000000000001F /* Debug */,
+				A1B2C3D40000000000000020 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = A1B2C3D40000000000000015 /* Project object */;
+	rootObject = A1B2C3D40000000000000019 /* Project object */;
 }

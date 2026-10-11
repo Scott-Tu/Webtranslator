@@ -5,6 +5,7 @@ struct ContentView: View {
     @EnvironmentObject private var browser: BrowserModel
     @FocusState private var addressFocused: Bool
     @Environment(\.scenePhase) private var scenePhase
+    @State private var showSettings = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -143,25 +144,14 @@ struct ContentView: View {
     }
 
     private var settingsMenu: some View {
-        Menu {
-            Picker("來源語言", selection: $browser.sourceLanguage) {
-                ForEach(SourceLanguage.allCases) { language in
-                    Text(language.title).tag(language)
-                }
-            }
-            .pickerStyle(.inline)
-
-            Section {
-                Toggle("開啟網頁時自動翻譯", isOn: $browser.autoTranslate)
-            }
-
-            if let detected = browser.detectedLanguage {
-                Section {
-                    Text("偵測到：\(detected) → 繁體中文")
-                }
-            }
+        Button {
+            showSettings = true
         } label: {
             Image(systemName: "gearshape")
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
+                .environmentObject(browser)
         }
     }
 

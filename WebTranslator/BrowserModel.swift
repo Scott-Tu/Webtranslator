@@ -59,6 +59,18 @@ final class BrowserModel: NSObject, ObservableObject {
     @Published var autoTranslate = UserDefaults.standard.bool(forKey: "autoTranslate") {
         didSet { UserDefaults.standard.set(autoTranslate, forKey: "autoTranslate") }
     }
+    @Published var engine = TranslationEngine(rawValue: UserDefaults.standard.string(forKey: "engine") ?? "") ?? .claude {
+        didSet { UserDefaults.standard.set(engine.rawValue, forKey: "engine") }
+    }
+    @Published var claudeModel = ClaudeModel(rawValue: UserDefaults.standard.string(forKey: "claudeModel") ?? "") ?? .opus {
+        didSet { UserDefaults.standard.set(claudeModel.rawValue, forKey: "claudeModel") }
+    }
+    @Published var apiKey = KeychainStore.read("anthropicAPIKey") ?? "" {
+        didSet { KeychainStore.save(apiKey.trimmingCharacters(in: .whitespacesAndNewlines), for: "anthropicAPIKey") }
+    }
+    /// 選了 Claude 但還沒貼金鑰時，自動改用 Apple 翻譯
+    var usesClaude: Bool { engine == .claude && !apiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+
     /// 按過「翻譯」之後，點連結、下一頁、上一頁都會自動續翻，直到按「看原文」為止
     @Published private(set) var keepTranslating = UserDefaults.standard.bool(forKey: "keepTranslating") {
         didSet { UserDefaults.standard.set(keepTranslating, forKey: "keepTranslating") }
@@ -72,6 +84,8 @@ final class BrowserModel: NSObject, ObservableObject {
     private var isRunning = false
     private var needsIncremental = false
     private var runID = 0
+    private var claudeTask: Task<Void, Never>?
+    private var claudeSourceHint: String?
     /// 每次換頁就加一，用來丟棄舊頁面還在跑的翻譯結果
     private var pageGeneration = 0
 
@@ -222,6 +236,11 @@ final class BrowserModel: NSObject, ObservableObject {
         }
 
         state = .translating(done: 0, total: 0)
+        if usesClaude {
+            claudeSourceHint = detectedLanguage ?? sourceLanguage.language.map { _ in sourceLanguage.title }
+            startClaudeRun()
+            return
+        }
         if configuration?.source == source {
             configuration?.invalidate()   // 同樣的語言組合：重新觸發 translationTask
         } else {
@@ -236,11 +255,26 @@ final class BrowserModel: NSObject, ObservableObject {
     }
 
     private func requestIncrementalTranslation() {
-        guard state == .translated, configuration != nil else { return }
+        guard state == .translated else { return }
         if isRunning {
             needsIncremental = true
-        } else {
+        } else if usesClaude {
+            startClaudeRun()
+        } else if configuration != nil {
             configuration?.invalidate()
+        }
+    }
+
+    private func startClaudeRun() {
+        claudeTask?.cancel()
+        let translator = ClaudeTranslator(apiKey: apiKey.trimmingCharacters(in: .whitespacesAndNewlines), model: claudeModel)
+        let title = pageTitle
+        let url = addressText
+        let hint = claudeSourceHint
+        claudeTask = Task {
+            await runTranslation(chunkSize: 60, concurrency: 3, prepare: {}) { texts in
+                try await translator.translate(texts, pageTitle: title, pageURL: url, sourceHint: hint)
+            }
         }
     }
 
@@ -253,6 +287,18 @@ final class BrowserModel: NSObject, ObservableObject {
 
     /// 由 ContentView 的 .translationTask 呼叫；session 只在這個函式執行期間有效。
     func runTranslation(using session: TranslationSession) async {
+        guard !usesClaude else { return }
+        await runTranslation(chunkSize: 40, concurrency: 1,
+                             prepare: { try await session.prepareTranslation() }) { [unowned self] texts in
+            try await self.translate(texts, with: session)
+        }
+    }
+
+    /// 收集頁面文字 → 分批翻譯 → 寫回網頁。concurrency > 1 時同時送出多批，先完成的先顯示。
+    private func runTranslation(chunkSize: Int,
+                                concurrency: Int,
+                                prepare: () async throws -> Void,
+                                translateChunk: @escaping ([String]) async throws -> [(String, String)]) async {
         runID += 1
         let myRun = runID
         isRunning = true
@@ -271,7 +317,7 @@ final class BrowserModel: NSObject, ObservableObject {
         var translatedCount = 0
 
         do {
-            try await session.prepareTranslation()   // 第一次使用會請使用者下載語言套件
+            try await prepare()   // Apple：第一次使用會請使用者下載語言套件
 
             guard let result = try await js("return window.__wt.collect();") as? [String: Any],
                   let token = result["token"] as? String,
@@ -301,12 +347,13 @@ final class BrowserModel: NSObject, ObservableObject {
 
             if !incremental { state = .translating(done: 0, total: uniqueTexts.count) }
 
+            let chunks = stride(from: 0, to: uniqueTexts.count, by: chunkSize).map {
+                Array(uniqueTexts[$0..<min($0 + chunkSize, uniqueTexts.count)])
+            }
             var done = 0
-            for start in stride(from: 0, to: uniqueTexts.count, by: 40) {
-                let chunk = Array(uniqueTexts[start..<min(start + 40, uniqueTexts.count)])
-                let pairs = try await translate(chunk, with: session)
-                guard generation == pageGeneration, myRun == runID else { return }   // 已經換頁或有新的翻譯工作
-
+            // 回傳 false 表示已換頁或有新的翻譯工作，應停止
+            func handle(_ chunk: [String], _ pairs: [(String, String)]) async throws -> Bool {
+                guard generation == pageGeneration, myRun == runID else { return false }
                 let payload: [[String: Any]] = pairs.flatMap { source, target in
                     (idsByText[source] ?? []).map { id -> [String: Any] in ["id": id, "text": target] }
                 }
@@ -317,6 +364,35 @@ final class BrowserModel: NSObject, ObservableObject {
                 translatedCount += pairs.count
                 done += chunk.count
                 if !incremental { state = .translating(done: done, total: uniqueTexts.count) }
+                return true
+            }
+
+            if concurrency <= 1 {
+                for chunk in chunks {
+                    let pairs = try await translateChunk(chunk)
+                    guard try await handle(chunk, pairs) else { return }
+                }
+            } else {
+                let stopped = try await withThrowingTaskGroup(of: ([String], [(String, String)]).self) { group -> Bool in
+                    var next = 0
+                    func addNext() {
+                        guard next < chunks.count else { return }
+                        let chunk = chunks[next]
+                        next += 1
+                        group.addTask { (chunk, try await translateChunk(chunk)) }
+                    }
+                    for _ in 0..<concurrency { addNext() }
+                    while let result = try await group.next() {
+                        let (chunk, pairs) = result
+                        guard try await handle(chunk, pairs) else {
+                            group.cancelAll()
+                            return true
+                        }
+                        addNext()
+                    }
+                    return false
+                }
+                if stopped { return }
             }
 
             if translatedCount == 0 && !incremental {
@@ -382,6 +458,7 @@ final class BrowserModel: NSObject, ObservableObject {
 extension BrowserModel: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         pageGeneration += 1
+        claudeTask?.cancel()
         state = .idle
         detectedLanguage = nil
     }
