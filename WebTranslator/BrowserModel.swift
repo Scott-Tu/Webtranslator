@@ -60,7 +60,9 @@ final class BrowserModel: NSObject, ObservableObject {
         didSet { UserDefaults.standard.set(autoTranslate, forKey: "autoTranslate") }
     }
     /// 按過「翻譯」之後，點連結、下一頁、上一頁都會自動續翻，直到按「看原文」為止
-    @Published private(set) var keepTranslating = false
+    @Published private(set) var keepTranslating = UserDefaults.standard.bool(forKey: "keepTranslating") {
+        didSet { UserDefaults.standard.set(keepTranslating, forKey: "keepTranslating") }
+    }
 
     /// 翻譯目標：繁體中文
     let targetLanguage = Locale.Language(identifier: "zh-Hant")
@@ -103,9 +105,13 @@ final class BrowserModel: NSObject, ObservableObject {
             },
             webView.observe(\.url) { [weak self] webView, _ in
                 MainActor.assumeIsolated {
-                    guard let self else { return }
-                    self.hasPage = webView.url != nil
-                    self.addressText = webView.url?.absoluteString ?? ""
+                    guard let self, let url = webView.url else { return }
+                    // 網頁程序被系統回收時 url 會暫時變成 nil，這時保留畫面狀態，等待自動重新載入
+                    self.hasPage = true
+                    self.addressText = url.absoluteString
+                    if url.scheme == "http" || url.scheme == "https" {
+                        UserDefaults.standard.set(url.absoluteString, forKey: "lastURL")
+                    }
                 }
             },
             webView.observe(\.canGoBack) { [weak self] webView, _ in
@@ -115,6 +121,25 @@ final class BrowserModel: NSObject, ObservableObject {
                 MainActor.assumeIsolated { self?.canGoForward = webView.canGoForward }
             },
         ]
+
+        restoreLastPage()
+    }
+
+    /// 重新開啟 App 或網頁被系統清掉時，回到最後看的頁面
+    func restoreLastPage() {
+        guard webView.url == nil || !hasPage,
+              let saved = UserDefaults.standard.string(forKey: "lastURL"),
+              let url = URL(string: saved) else { return }
+        hasPage = true
+        addressText = saved
+        webView.load(URLRequest(url: url))
+    }
+
+    /// App 回到前景時呼叫：網頁內容若已被系統回收就重新載入
+    func reloadIfNeeded() {
+        if webView.url == nil {
+            restoreLastPage()
+        }
     }
 
     // MARK: - 瀏覽
@@ -373,6 +398,15 @@ extension BrowserModel: WKNavigationDelegate {
 
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         showLoadError(error)
+    }
+
+    /// 在背景太久時 iOS 會結束網頁程序，畫面會變白；自動重新載入最後的頁面
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        if webView.url != nil {
+            webView.reload()
+        } else {
+            restoreLastPage()
+        }
     }
 
     private func showLoadError(_ error: Error) {

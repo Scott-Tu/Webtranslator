@@ -4,6 +4,7 @@ import Translation
 struct ContentView: View {
     @EnvironmentObject private var browser: BrowserModel
     @FocusState private var addressFocused: Bool
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         VStack(spacing: 0) {
@@ -20,6 +21,9 @@ struct ContentView: View {
                 }
             }
             bottomBar
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { browser.reloadIfNeeded() }
         }
         .translationTask(browser.configuration) { session in
             await browser.runTranslation(using: session)
